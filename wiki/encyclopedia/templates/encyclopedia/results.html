@@ -7,4 +7,13 @@
 {% block body %}
     <h3>Search Results:</h3>
     <!-- TODO: add UL showing results that contain user substring -->
+     {% if queries %}
+     <ul>
+        {% for query in queries %}
+        <li><a href="{% url 'wiki' query %}">{{ query }}</a></li>
+        {% endfor %}
+     </ul>
+     {% else %}
+        <h4>Nothing found for "{{ searched }}"</h4>
+    {% endif %}
 {% endblock %}
