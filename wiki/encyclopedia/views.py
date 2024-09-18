@@ -1,8 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import Http404
+from django import forms
 from markdown2 import Markdown
 
 from . import util
+
+
+class Search(forms.Form):
+    q = forms.CharField(label="", max_length=100)
+
 
 
 def index(request):
@@ -23,5 +29,8 @@ def wiki(request, title):
 
 
 # Displays search results that contain user substrings
-def results(request, query):
-    return None
+def results(request):
+    searched = request.GET['q']
+
+    if searched.upper() in (name.upper() for name in util.list_entries()):
+        return redirect(wiki(request,name=searched))
