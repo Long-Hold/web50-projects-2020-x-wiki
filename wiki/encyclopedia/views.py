@@ -30,6 +30,6 @@ def wiki(request, title):
 
 # Displays search results that contain user substrings
 def results(request):
-    searched = request.GET.get["q", ""]
+    searched = request.GET["q"]
     if searched.upper() in (name.upper() for name in util.list_entries()):
         return redirect(wiki, searched)
