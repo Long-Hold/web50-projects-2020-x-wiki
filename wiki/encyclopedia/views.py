@@ -20,3 +20,8 @@ def wiki(request, title):
     return render(request, "encyclopedia/wiki.html",
                   {"title": title, "content":Markdown().convert(content)}
                   )
+
+
+# Displays search results that contain user substrings
+def results(request, query):
+    return None
