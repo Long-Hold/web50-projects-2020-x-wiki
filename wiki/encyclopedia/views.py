@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from markdown2 import Markdown
 
 from . import util
-
+from .forms import CreatePageForm
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -37,3 +37,20 @@ def results(request):
         "searched": searched
     })
 
+
+# TODO: Save markup data to file, upload to /entries directory
+# Processes New Page Form data
+def create_page(request):
+    # If request is POST we need to process the data
+    if request.method == "POST":
+        # Create form instance and populate it with data from the request
+        form = CreatePageForm(request.POST)
+        # Check for validity
+        if form.is_valid():
+            return redirect("index")
+
+    # If GET or any other method, create blank form
+    else:
+        form = CreatePageForm()
+
+    return render(request, "encyclopedia/createpage.html", {"form": form})
