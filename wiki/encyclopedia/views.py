@@ -38,7 +38,6 @@ def results(request):
     })
 
 
-# TODO: Save markup data to file, upload to /entries directory
 # Processes New Page Form data
 def create_page(request):
     # If request is POST we need to process the data
@@ -50,12 +49,16 @@ def create_page(request):
         if form.is_valid():
             # Check if new entry already exists in entry directory
             new_title = form.cleaned_data["entry_title"]
+            new_body = form.cleaned_data["entry_body"]
             if new_title.lower() in [entry.lower() for entry in util.list_entries()]:
                return HttpResponseBadRequest("Invalid request: duplicate entry found.")
 
+            # Prepend the title to the body text to act as a header when the .md file is loaded
+            header = f"# {new_title} \n\n"
+            final_body = header + new_body
 
-
-            return redirect("index")
+            util.save_entry(new_title, final_body)
+            return redirect("wiki", title=new_title)
 
     # If GET or any other method, create blank form
     else:
