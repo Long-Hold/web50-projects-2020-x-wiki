@@ -50,8 +50,11 @@ def create_page(request):
             # Check if new entry already exists in entry directory
             new_title = form.cleaned_data["entry_title"]
             new_body = form.cleaned_data["entry_body"]
+
+            # If an entry already exists, inform the user
             if new_title.lower() in [entry.lower() for entry in util.list_entries()]:
-               return HttpResponseBadRequest("Invalid request: duplicate entry found.")
+                form.add_error("entry_title", "A page with this title already exists.")
+                return render(request, "encyclopedia/createpage.html", {"form": form})
 
             # Prepend the title to the body text to act as a header when the .md file is loaded
             header = f"# {new_title} \n\n"
