@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseBadRequest
 from markdown2 import Markdown
 
 from . import util
@@ -45,8 +45,16 @@ def create_page(request):
     if request.method == "POST":
         # Create form instance and populate it with data from the request
         form = CreatePageForm(request.POST)
+
         # Check for validity
         if form.is_valid():
+            # Check if new entry already exists in entry directory
+            new_title = form.cleaned_data["entry_title"]
+            if new_title.lower() in [entry.lower() for entry in util.list_entries()]:
+               return HttpResponseBadRequest("Invalid request: duplicate entry found.")
+
+
+
             return redirect("index")
 
     # If GET or any other method, create blank form
