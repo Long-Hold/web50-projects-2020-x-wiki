@@ -3,7 +3,7 @@ from django.http import Http404, HttpResponseBadRequest
 from markdown2 import Markdown
 
 from . import util
-from .forms import CreatePageForm
+from .forms import CreatePageForm, EditEntryForm
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -68,3 +68,11 @@ def create_page(request):
         form = CreatePageForm()
 
     return render(request, "encyclopedia/createpage.html", {"form": form})
+
+
+# Retrieves the markdown contents and displays them
+# On a page where they can be edited by the user
+def edit(request, title):
+    entry_content = util.get_entry(title)
+    form = EditEntryForm(initial={"entry_body": entry_content})
+    return render(request, "encyclopedia/edit.html", {"title": title, "form": form})
