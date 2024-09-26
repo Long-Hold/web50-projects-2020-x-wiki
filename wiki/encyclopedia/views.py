@@ -1,3 +1,5 @@
+import random
+
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponseBadRequest
 from markdown2 import Markdown
@@ -86,3 +88,9 @@ def edit(request, title):
         form = EditEntryForm(initial={"entry_body": entry_content})
     
     return render(request, "encyclopedia/edit.html", {"title": title, "form": form})
+
+
+# Redirects the user to a random entry
+def random_page(request):
+    entries = util.list_entries()
+    return redirect("wiki", title=random.choice(entries))
