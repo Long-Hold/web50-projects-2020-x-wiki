@@ -73,6 +73,16 @@ def create_page(request):
 # Retrieves the markdown contents and displays them
 # On a page where they can be edited by the user
 def edit(request, title):
-    entry_content = util.get_entry(title)
-    form = EditEntryForm(initial={"entry_body": entry_content})
+    # If the user has decided to submit their editted page
+    if request.method == "POST":
+        form = EditEntryForm(request.POST)
+        if form.is_valid():
+            edited_form = form.cleaned_data["entry_body"]
+            util.save_entry(title, edited_form)
+            return redirect("wiki", title=title)
+    
+    else:
+        entry_content = util.get_entry(title)
+        form = EditEntryForm(initial={"entry_body": entry_content})
+    
     return render(request, "encyclopedia/edit.html", {"title": title, "form": form})
